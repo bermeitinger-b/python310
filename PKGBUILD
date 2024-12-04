@@ -43,10 +43,9 @@ prepare() {
 build() {
   cd Python-${pkgver}
 
-  # PGO should be done with -O3
+  CFLAGS="${CFLAGS} -fno-semantic-interposition -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
   CFLAGS="${CFLAGS/-O2/-O3} -ffat-lto-objects"
-
-  # Disable bundled pip & setuptools
+  CFLAGS="${CFLAGS} -march=znver4 -mtune=znver4"
   ./configure \
               ax_cv_c_float_words_bigendian=no \
               --prefix=/usr \
