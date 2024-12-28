@@ -7,7 +7,7 @@
 
 pkgname=python310
 pkgver=3.10.16
-pkgrel=0
+pkgrel=1
 _pymajver=3
 _pybasever=${pkgver%.*}
 pkgdesc="Next generation of the python high-level scripting language, version 3.10"
