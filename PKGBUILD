@@ -6,7 +6,7 @@
 # Contributor: Jason Chu <jason@archlinux.org>
 
 pkgname=python310
-pkgver=3.10.17
+pkgver=3.10.18
 pkgrel=1
 _pymajver=3
 _pybasever=${pkgver%.*}
@@ -23,7 +23,7 @@ optdepends=('python-setuptools'
               'xz: for lzma'
               'tk: for tkinter')
 source=("https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz")
-sha256sums=('4c68050f049d1b4ac5aadd0df5f27941c0350d2a9e7ab0907ee5eb5225d9d6b0')
+sha256sums=('ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f')
 validpgpkeys=('A035C8C19219BA821ECEA86B64E628F8D684696D') # Pablo Galindo Salgado <pablogsal@gmail.com>
 
 prepare() {
