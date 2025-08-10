@@ -7,7 +7,7 @@
 
 pkgname=python310
 pkgver=3.10.18
-pkgrel=1
+pkgrel=2
 _pymajver=3
 _pybasever=${pkgver%.*}
 pkgdesc="Next generation of the python high-level scripting language, version 3.10"
@@ -17,17 +17,17 @@ url="https://www.python.org/"
 depends=('bzip2' 'expat' 'gdbm' 'libffi' 'libnsl' 'libxcrypt' 'openssl' 'zlib')
 makedepends=('tk' 'sqlite' 'bluez-libs' 'mpdecimal' 'llvm' 'gdb')
 optdepends=('python-setuptools'
-              'python-pip'
-              'sqlite'
-              'mpdecimal: for decimal'
-              'xz: for lzma'
-              'tk: for tkinter')
+  'python-pip'
+  'sqlite'
+  'mpdecimal: for decimal'
+  'xz: for lzma'
+  'tk: for tkinter')
 source=("https://www.python.org/ftp/python/${pkgver%rc*}/Python-${pkgver}.tar.xz")
 sha256sums=('ae665bc678abd9ab6a6e1573d2481625a53719bc517e9a634ed2b9fefae3817f')
 validpgpkeys=('A035C8C19219BA821ECEA86B64E628F8D684696D') # Pablo Galindo Salgado <pablogsal@gmail.com>
 
 prepare() {
-  cd Python-${pkgver}
+  cd Python-${pkgver} || exit 1
 
   # FS#23997
   sed -i -e "s|^#.* /usr/local/bin/python|#!/usr/bin/python|" Lib/cgi.py
@@ -40,33 +40,32 @@ prepare() {
 }
 
 build() {
-  cd Python-${pkgver}
+  cd Python-${pkgver} || exit 1
 
   CFLAGS="${CFLAGS} -fno-semantic-interposition -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
   CFLAGS="${CFLAGS/-O2/-O3} -ffat-lto-objects"
   CFLAGS="${CFLAGS} -march=znver4 -mtune=znver4"
   ./configure \
-              ax_cv_c_float_words_bigendian=no \
-              --prefix=/usr \
-              --enable-shared \
-              --with-computed-gotos \
-              --enable-optimizations \
-              --with-lto \
-              --enable-ipv6 \
-              --with-system-expat \
-              --with-dbmliborder=gdbm:ndbm \
-              --with-system-ffi \
-              --with-system-libmpdec \
-              --enable-loadable-sqlite-extensions \
-              --without-ensurepip \
-              --with-tzpath=/usr/share/zoneinfo
+    ax_cv_c_float_words_bigendian=no \
+    --prefix=/usr \
+    --enable-shared \
+    --with-computed-gotos \
+    --enable-optimizations \
+    --with-lto \
+    --enable-ipv6 \
+    --with-system-expat \
+    --with-dbmliborder=gdbm:ndbm \
+    --with-system-ffi \
+    --with-system-libmpdec \
+    --enable-loadable-sqlite-extensions \
+    --without-ensurepip \
+    --with-tzpath=/usr/share/zoneinfo
 
   make EXTRA_CFLAGS="$CFLAGS"
 }
 
-
 package() {
-  cd Python-${pkgver}
+  cd Python-${pkgver} || exit 1
 
   # Hack to avoid building again
   sed -i 's/^all:.*$/all: build_all/' Makefile
@@ -74,7 +73,7 @@ package() {
   # PGO should be done with -O3
   CFLAGS="${CFLAGS/-O2/-O3}"
 
-  make DESTDIR="${pkgdir}" EXTRA_CFLAGS="$CFLAGS"  altinstall maninstall
+  make DESTDIR="${pkgdir}" EXTRA_CFLAGS="$CFLAGS" altinstall maninstall
 
   # Split tests
   rm -r "$pkgdir"/usr/lib/python*/{test,ctypes/test,distutils/tests,idlelib/idle_test,lib2to3/tests,sqlite3/test,tkinter/test,unittest/test}
